@@ -1,0 +1,44 @@
+﻿@model ProductListItemViewModel
+
+<div class="col-12">
+    <div class="checkout-cart-total">
+        <h2 class="checkout-title">YOUR ORDER</h2>
+        <h4>Product <span>Total</span></h4>
+        <ul>
+            @foreach (var product in Model.Products)
+            {
+                
+            <li>
+                <span class="left">@product.Title X @product.Quantity </span> <span class="right">$@product.Total</span>
+            </li>
+            }
+        
+        </ul>
+        <p>Sub Total <span>$@Model.Products.Sum(pm => pm.Total)</span></p>
+        <p>Shipping Fee <span>$00.00</span></p>
+        <h4>Grand Total <span>$@Model.Products.Sum(pm => pm.Total)</span></h4>
+        <div class="method-notice mt--25">
+            <div class="method-notice mt--25">
+                <article>
+                    <h3 class="d-none sr-only">blog-article</h3>
+                    Sorry, it seems that there are no available payment methods for
+                    your state. Please contact us if you
+                    require
+                    assistance
+                    or wish to make alternate arrangements.
+                </article>
+            </div>
+            <div class="term-block">
+                <input type="checkbox" id="accept_terms2">
+                <label for="accept_terms2">
+                    I’ve read and accept the terms &
+                    conditions
+                </label>
+            </div>
+            <form method="post" asp-route="client-checkout-place-order" id="place-form-123313">
+
+            <button type="submit" form="place-form-123313" class="w-100">Place order</button>
+
+            </form>
+        </div>
+    </div>

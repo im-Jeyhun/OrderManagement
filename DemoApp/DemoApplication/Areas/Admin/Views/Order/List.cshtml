@@ -1,0 +1,49 @@
+﻿@model List<OrderListItemViewModel>
+
+<div class="col-lg-12 col-12 mt--30 mt-lg--0">
+    <!-- Single Tab Content Start -->
+    <div class="myaccount-content">
+        <h3>Orders</h3>
+        <div class="myaccount-table table-responsive text-center">
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th>No</th>
+                        <th>Client</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Total</th>
+                        <th>Order Actions</th>
+                        <th>Products Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model)
+                    {
+
+                        <tr>
+                            <td>@order.Id</td>
+                            <td>@order.Client</td>
+                            <td>@order.OrderTime</td>
+                            <td>@order.OrderStatus</td>
+                            <td>@order.OrderSum</td>
+                            <td>
+                                <a asp-route="admin-order-update" asp-route-orderId="@order.Id" class="primary-btn">Edit order</a>
+                                <br>
+                                <form method="post" asp-route="admin-order-delete" asp-route-orderId="@order.Id">
+
+                                    <button class="primary-btn">Delete order</button>
+                                </form>
+                            </td>
+                            <td><a asp-route="" class="btn">Edit Product</a></td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Single Tab Content End -->
+</div>
+
+<!-- My Account Tab Content End -->
