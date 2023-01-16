@@ -1,6 +1,7 @@
 ﻿using DemoApplication.Areas.Admin.ViewModels.Order;
 using DemoApplication.Contracts.Order;
 using DemoApplication.Database;
+using DemoApplication.Database.Models;
 using DemoApplication.Services.Abstracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,10 +16,13 @@ namespace DemoApplication.Areas.Admin.Controllers
     {
         private readonly DataContext _dataContext;
         private readonly IUserService _userService;
-        public OrderController(DataContext dataContext, IUserService userService)
+        private readonly IEmailService _emailService;
+        private const string ORDER_MESSAGE_TITLE = "Your oder current stage";
+        public OrderController(DataContext dataContext, IUserService userService, IEmailService emailService)
         {
             _dataContext = dataContext;
             _userService = userService;
+            _emailService = emailService;
         }
 
         [HttpGet("order-list",Name ="admin-order-list")]
@@ -57,11 +61,16 @@ namespace DemoApplication.Areas.Admin.Controllers
         {
             if(!ModelState.IsValid) return View(model);
 
-            var order = await _dataContext.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
+            var order = await _dataContext.Orders.Include(o => o.User).FirstOrDefaultAsync(o => o.Id == orderId);
 
             if (order is null) return NotFound();
 
             order.Status = model.OrderStatus;
+
+            var message = new Message(order.User.Email, ORDER_MESSAGE_TITLE,
+                StatusMessage.GetStatusMessage((Status)model.OrderStatus,order.User,order.Id));
+
+            _emailService.Send(message);
 
             await _dataContext.SaveChangesAsync();
 
